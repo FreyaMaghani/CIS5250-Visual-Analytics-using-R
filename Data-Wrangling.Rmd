@@ -1,0 +1,66 @@
+---
+title: "Data Wrangling"
+author: "Freya Maghani"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data type Trasformation and Missing Value Imputation
+
+As part of data cleaning , some columns in the dataset must have their formats changed and the missing and unrelated values are replaced with NA.
+
+The data type of Education and Marital Status are categorical and the format is changed from Char to factor.
+The date column's data type is changed to date type, using **library(lubridate)**.
+The missing values are replaced, utilizing **library(stringr)** in the process.
+
+```{r Data wrangling , retreiving columns' values and types and changing the format}
+
+setwd("C:/IS/5250-Visual Analytics/Rproject/Dataset")
+sales_campaign_final<- read.csv("sales_campaign_final.csv", header=TRUE)
+
+dim(sales_campaign_final)
+summary(sales_campaign_final)
+
+sales_campaign_final$Education<-as.factor(sales_campaign_final$Education)
+unique(sales_campaign_final$Education)
+sales_campaign_final$Marital_Status<-as.factor(sales_campaign_final$Marital_Status)
+unique(sales_campaign_final$Marital_Status)
+
+library(lubridate)
+head(sales_campaign_final$Dt_Customer)
+sales_campaign_final$Dt_Customer<-dmy(sales_campaign_final$Dt_Customer)
+summary(sales_campaign_final)
+
+class(sales_campaign_final$Dt_Customer)
+class(sales_campaign_final$Education)
+class(sales_campaign_final$Marital_Status)
+
+```
+
+
+```{r Data wrangling , Replacing the missing/irrevant values with NA, Removing the rows with NA values}
+
+unique(sales_campaign_final$Marital_Status)
+   
+
+library(stringr)
+absurd<- which(str_detect(sales_campaign_final$Marital_Status, "Absurd"))
+Alone<- which(str_detect(sales_campaign_final$Marital_Status, "Alone"))
+YOLO<- which(str_detect(sales_campaign_final$Marital_Status, "YOLO"))
+
+sales_campaign_final$Marital_Status[absurd]<- NA
+sales_campaign_final$Marital_Status[Alone]<- NA
+sales_campaign_final$Marital_Status[YOLO]<- NA
+unique(sales_campaign_final$Marital_Status)
+
+sales_campaign_final$Marital_Status <- as.factor(sales_campaign_final$Marital_Status)
+missing_Marital_Status<-which(is.na(sales_campaign_final$Marital_Status))
+sales_campaign_final <- sales_campaign_final[-missing_Marital_Status,]
+
+summary(sales_campaign_final)
+unique(sales_campaign_final$Marital_Status)
+
+write.csv(sales_campaign_final,file="sales_campaign_final.csv")
+```

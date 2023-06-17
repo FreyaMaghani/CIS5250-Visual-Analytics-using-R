@@ -1,0 +1,51 @@
+---
+title: "Data Profiling and Transforming"
+author: Freya Maghani
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r Data Profiling and Loading Packages}
+
+setwd("C:/IS/5250-Visual Analytics/Rproject/Dataset")
+
+sales_campaign<-read.csv("marketing_campaign.csv")
+
+View(sales_campaign)
+
+dim(sales_campaign)
+
+library(tidyr)
+
+```
+
+
+```{r Data Transformation: changing the TSV fromat to CSV tabualar format }
+
+sales_campaign_split<-separate(sales_campaign,ID.Year_Birth.Education.Marital_Status.Income.Kidhome.Teenhome.Dt_Customer.Recency.MntWines.MntFruits.MntMeatProducts.MntFishProducts.MntSweetProducts.MntGoldProds.NumDealsPurchases.NumWebPurchases.NumCatalogPurchases.NumStorePurchases.NumWebVisitsMonth.AcceptedCmp3.AcceptedCmp4.AcceptedCmp5.AcceptedCmp1.AcceptedCmp2.Complain.Z_CostContact.Z_Revenue.Response,c("ID","Year_Birth","Education","Marital_Status","Income","Kidhome","Teenhome","Dt_Customer","Recency","MntWines","MntFruits","MntMeatProducts","MntFishProducts","MntSweetProducts","MntGoldProds","NumDealsPurchases","NumWebPurchases","NumCatalogPurchases","NumStorePurchases","NumWebVisitsMonth","AcceptedCmp3","AcceptedCmp4","AcceptedCmp5","AcceptedCmp1","AcceptedCmp2","Complain","Z_CostContact","Z_Revenue","Response"),sep="\t")
+
+View(sales_campaign_split)
+
+dim(sales_campaign_split)
+
+summary(sales_campaign_split)
+
+str(sales_campaign_split)
+
+write.csv(sales_campaign_split,file="sales_campaign_split_final.csv")
+
+sales_campaign_final<- read.csv("sales_campaign_split_final.csv", header=TRUE)
+
+dim(sales_campaign_final)
+
+head(sales_campaign_final[,1:9])
+
+summary(sales_campaign_final)
+
+str(sales_campaign_final)
+```
+
+

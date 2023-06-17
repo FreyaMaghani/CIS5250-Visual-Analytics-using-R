@@ -1,0 +1,62 @@
+---
+title: "Data-Visualization"
+author: "Freya Maghani"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## visual Analytics
+
+Explanatory data analytics, taking into account visual analytics principles.
+The gather() function in **library(tidyr)** is used to build a long tibble.
+A manual scrip is used to build the bar chart , utilizing **library(dplyr)** and 
+**library(ggplot2)**.
+**library(corrplot)** is used to illustrate the correlation matrix.
+
+```{r Loading the Dataset}
+
+setwd("C:/IS/5250-Visual Analytics/Rproject/Dataset")
+sales_campaign_final<- read.csv("sales_campaign_final.csv", header=TRUE)
+str(sales_campaign_final)
+summary(sales_campaign_final)
+```
+
+```{r Analysis of customers' characteristics illustrated by horizontal bar chart , echo=FALSE}
+
+
+source("functions.R")
+
+unique(sales_campaign_final$Marital_Status)
+
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+
+campaign_purchase_method <- wide_to_long_tibble(sales_campaign_final,purchase_methods,purchase_methods_QTY,17:20)
+
+summary(campaign_purchase_method)
+
+grouped_bar_chart (campaign_purchase_method, Marital_Status,purchase_methods, purchase_methods_QTY)+ylab("Number of Purchases")+  scale_fill_manual(values = c("grey75", "blue", "grey75", "blue", "grey75" )) + theme(panel.grid.major.x = element_line("grey"))+ scale_x_discrete(name="Methods of Purchases",labels= c("WebPurchases","StorePurchases","DealPurchases","CatalogPurchases")) + ggtitle("The effects of marital status on the shopping habits", subtitle="People who are married or living together make more purchases \nThe preferred methods are in-store purchases followed by web purchases")
+
+```
+
+```{r Market Basket Analysis by Correlation Matrix and Scatter Plots , echo=FALSE}
+
+install.packages('corrplot')
+library(corrplot)
+
+sales_campaign_final$income_range <- cut(sales_campaign_final$Income,seq(0,100000,25000), labels = c("first_quarter","second_quarter","third_quarter","fourth_quarter"))
+sales_campaign_final$income_range <- as.factor(sales_campaign_final$income_range)
+sales_campaign_final$Education <- as.factor(sales_campaign_final$Education)
+str(sales_campaign_final)
+corr <- sales_campaign_final[,c("MntWines","MntFruits","MntMeatProducts","MntFishProducts","MntSweetProducts","MntGoldProds")]
+pcor <- cor(corr)
+round(pcor, digits = 2)
+
+corrplot(pcor, tl.col="grey40",tl.cex=0.8, tl.srt = 70, method='number') + title(main="correlation between types of products", adj = 0, line=3)
+
+ggplot(sales_campaign_final)+geom_point(mapping=aes(x=MntFishProducts,y=MntFruits, color=income_range), alpha=40/100) + geom_smooth(mapping=aes(x=MntFishProducts,y=MntFruits, color=income_range), se = FALSE) +facet_grid(.~Education)+ scale_colour_brewer(palette = "Set1")+ theme(panel.background = element_blank(),panel.grid.major= element_line("grey"))+ ggtitle("correlation of Fruit and Fish products by Income range by Education Level")+ scale_y_continuous(expand = c(0,0), limit=c(0,NA))
+
+```
