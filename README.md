@@ -1,6 +1,6 @@
 # CIS5250-Visual-Analytics-using-R
 
-## Customers'characteristics Analysis and Market Basket Analysis
+## Customers' Characteristics Analysis and Market Basket Analysis
 
 <br> Dataset URL
 <br>https://www.kaggle.com/imakash3011/customer-personality-analysis
